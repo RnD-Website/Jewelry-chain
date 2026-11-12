@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orelle Chain Atelier</title>
+<meta name="description" content="Orelle — fine gold chains, shaped and finished by hand in small batches. Cable, curb, rope, paperclip and figaro chains in 14k and 18k gold.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wdth,wght@62..125,300..700&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="preload" as="image" href="assets/img/p-teal-cut.png">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <nav class="nav__left" aria-label="Primary">
+    <a href="#collections" class="nav__link">Shop</a>
+    <a href="#collections" class="nav__link">Collections</a>
+    <a href="#story" class="nav__link">Journal</a>
+    <a href="#story" class="nav__link">About</a>
+  </nav>
+  <a href="#top" class="logo" aria-label="Orelle home">
+    <span class="logo__script">Orelle</span>
+    <span class="logo__sub">Chain Atelier</span>
+  </a>
+  <div class="nav__right">
+    <a href="#" class="nav__link">Log in</a>
+    <button class="nav__link nav__cart" id="cartBtn" aria-label="Open cart">Cart (<span id="cartCount">0</span>)</button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO (pinned, scroll-driven) ================= -->
+<section class="hero" id="hero">
+  <div class="hero__sticky">
+    <h1 class="hero__title" id="heroTitle">
+      <span class="ln"><em>C</em>hains</span>
+      <span class="ln">for everyday</span>
+      <span class="ln">rituals.</span>
+    </h1>
+
+    <div class="orbit" id="orbit" aria-hidden="true">
+      <!-- tiles injected by JS -->
+      <div class="pendant" id="pendant">
+        <div class="pendant__sway"><!-- product cut-outs injected by JS --></div>
+      </div>
+    </div>
+
+    <!-- expanding image (scroll transition) -->
+    <div class="expander" id="expander" aria-hidden="true">
+      <!-- the selected product's worn photo, injected by JS -->
+      <div class="expander__shade"></div>
+    </div>
+
+    <h2 class="made" id="made" aria-label="Made by hand, worn every day.">
+      <span class="w"><em>M</em>ade</span> <span class="w">by</span> <span class="w">hand,</span><br>
+      <span class="w">worn</span> <span class="w">every</span> <span class="w">day.</span>
+    </h2>
+
+    <ul class="cats" id="cats" aria-label="Chain styles">
+      <li>Cable</li><li>Curb</li><li>Rope</li><li>Paperclip</li><li>Figaro</li>
+    </ul>
+
+    <div class="hero__foot">
+      <p class="hero__lede">
+        <span class="lede a">Crafted gold chains designed to<br>accompany everyday rituals</span>
+        <span class="lede b">Shaped and finished by hand, in<br>small batches, in our own studio</span>
+      </p>
+      <span class="scroll-hint"><i></i>Scroll</span>
+      <a href="#collections" class="explore">Explore collections <svg viewBox="0 0 16 16" width="12" height="12"><path d="M3 3v6h9m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COLLECTIONS ================= -->
+<section class="collections" id="collections">
+  <div class="sec-head">
+    <h2 class="display"><em>F</em>our <em>C</em>ollections.<br><em>E</em>ndless <em>S</em>tories.</h2>
+    <p class="sec-head__note">Each chain is thoughtfully designed and<br>meticulously crafted in small batches.</p>
+  </div>
+  <div class="coll-grid">
+    <a href="#showcase" class="coll coll--n reveal" data-n="01">
+      <img src="assets/img/coll-pendant.jpg" alt="Gold bar pendant with a green stone on a fine chain" loading="lazy" style="object-position: 50% 52%">
+      <span class="coll__no">01</span>
+      <span class="coll__aside">For the stone<br>you never take off.</span>
+      <h3 class="coll__title"><em>P</em>endant.</h3>
+      <span class="coll__cta">Explore collection →</span>
+    </a>
+    <a href="#showcase" class="coll coll--w reveal" data-n="02">
+      <img src="assets/img/coll-layering.jpg" alt="Two layered gold chains with blue and clear drop pendants" loading="lazy" style="object-position: 50% 84%">
+      <span class="coll__no">02</span>
+      <span class="coll__aside">Objects to stack<br>and carry with you.</span>
+      <h3 class="coll__title"><em>L</em>ayering.</h3>
+      <span class="coll__cta">Explore collection →</span>
+    </a>
+    <a href="#showcase" class="coll coll--w reveal" data-n="03">
+      <img src="assets/img/coll-statement.jpg" alt="Rose gold opal flower pendant held over the fingers" loading="lazy" style="object-position: 55% 58%">
+      <span class="coll__no">03</span>
+      <span class="coll__aside">Weight you can<br>feel on the skin.</span>
+      <h3 class="coll__title"><em>S</em>tatement.</h3>
+      <span class="coll__cta">Explore collection →</span>
+    </a>
+    <a href="#showcase" class="coll coll--n reveal" data-n="04">
+      <img src="assets/img/coll-everyday.jpg" alt="Gold four-leaf clover pendant held between the fingers" loading="lazy" style="object-position: 50% 56%">
+      <span class="coll__no">04</span>
+      <span class="coll__aside">Made for everyday<br>rituals.</span>
+      <h3 class="coll__title"><em>E</em>veryday.</h3>
+      <span class="coll__cta">Explore collection →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ================= PRODUCT SHOWCASE (pinned) ================= -->
+<section class="showcase" id="showcase">
+  <div class="showcase__sticky">
+    <div class="sc-card sc-photo" id="scPhoto">
+      <div class="sc-photo__imgs" id="scImgs"></div>
+      <h3 class="sc-photo__title" id="scTitle"></h3>
+      <div class="sc-photo__buy">
+        <button class="pill pill--light" id="scAdd"><svg viewBox="0 0 16 16" width="11" height="11"><path d="M3 5h10l-1 9H4L3 5Zm2.5 0a2.5 2.5 0 0 1 5 0" fill="none" stroke="currentColor" stroke-width="1.4"/></svg> Add to cart</button>
+        <span class="pill pill--light" id="scPrice"></span>
+      </div>
+      <p class="sc-photo__specs" id="scSpecs"></p>
+    </div>
+    <div class="sc-card sc-stage" id="scStage">
+      <canvas id="chainCanvas" aria-label="Rotating 3D chain preview"></canvas>
+      <span class="pill pill--dark sc-stage__hint"><i></i>Scroll to explore</span>
+      <span class="plus" style="left:25%;top:28%"></span><span class="plus" style="right:25%;top:28%"></span>
+      <span class="plus" style="left:25%;bottom:28%"></span><span class="plus" style="right:25%;bottom:28%"></span>
+      <span class="sc-stage__meta" id="scMeta"></span>
+      <div class="dots" id="scDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE EDIT (shop grid) ================= -->
+<section class="edit" id="edit">
+  <div class="sec-head">
+    <h2 class="display"><em>T</em>he <em>E</em>dit.</h2>
+    <p class="sec-head__note">Five chains, three golds, endless ways to wear them.<br>Free resizing and lifetime polishing on every piece.</p>
+  </div>
+  <div class="edit-grid" id="editGrid"></div>
+</section>
+
+<!-- ================= STATEMENT ================= -->
+<section class="story" id="story">
+  <div class="story__grid">
+    <figure class="story__photo reveal">
+      <img src="assets/img/model-pendant.jpg" alt="Emerald-green pendant on a fine gold chain, worn at the collarbone" loading="lazy">
+      <figcaption>Halo pendant · 14k yellow gold · 45 cm</figcaption>
+    </figure>
+    <div class="story__text reveal">
+      <p class="story__eyebrow">Our studio</p>
+      <h2 class="story__title"><em>A</em> chain doesn’t need<br>to be quiet.</h2>
+      <p class="story__lede">Some pieces blend in. Ours don’t always try to. We like honest links: soldered joins, unhurried details and gold that gets softer the longer you wear it.</p>
+      <ul class="story__points">
+        <li><span class="story__k">Soldered by hand</span><span class="story__v">Every link is closed and soldered at the bench, so it never pulls open.</span></li>
+        <li><span class="story__k">Recycled gold</span><span class="story__v">14k and 18k recycled gold, hallmarked and made in small batches.</span></li>
+        <li><span class="story__k">Polished for life</span><span class="story__v">Bring any chain back for free polishing and resizing, whenever it needs it.</span></li>
+      </ul>
+      <div class="story__foot">
+        <figure class="story__thumb"><img src="assets/img/hero-leaf.jpg" alt="" loading="lazy"></figure>
+        <div class="story__end">
+          <p class="story__close"><em>K</em>eep them close.</p>
+          <a href="#" class="explore">Our story <svg viewBox="0 0 16 16" width="12" height="12"><path d="M3 3v6h9m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer__top">
+    <a href="#top" class="logo logo--light"><span class="logo__script">Orelle</span><span class="logo__sub">Chain Atelier</span></a>
+    <div class="footer__cols">
+      <div><h4>Shop</h4><a href="#edit">All chains</a><a href="#collections">Pendant</a><a href="#collections">Layering</a><a href="#collections">Statement</a><a href="#collections">Everyday</a></div>
+      <div><h4>Explore</h4><a href="#story">Our studio</a><a href="#story">Journal</a><a href="#">Chain guide</a><a href="#">Gift cards</a></div>
+      <div><h4>Help</h4><a href="#">Shipping &amp; returns</a><a href="#">Sizing &amp; lengths</a><a href="#">Care &amp; polishing</a><a href="#">Contact</a></div>
+    </div>
+    <form class="news" id="news">
+      <p>Notes on new pieces, collections &amp; things worth keeping.</p>
+      <label class="news__field"><input type="email" required placeholder="Email address" aria-label="Email address"><button type="submit">Subscribe →</button></label>
+      <span class="news__ok" id="newsOk">Thank you — you’re on the list.</span>
+    </form>
+  </div>
+  <div class="footer__big" aria-hidden="true">Orelle</div>
+  <div class="footer__bottom">
+    <span>© 2026 Orelle Chain Atelier</span>
+    <span>14k &amp; 18k recycled gold · Hallmarked</span>
+    <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+  </div>
+</footer>
+
+<!-- ================= CART DRAWER ================= -->
+<div class="drawer-scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart" aria-hidden="true">
+  <div class="drawer__head"><h3 class="display-s"><em>Y</em>our <em>C</em>art</h3><button class="drawer__x" id="drawerX" aria-label="Close cart">Close</button></div>
+  <ul class="drawer__items" id="drawerItems"></ul>
+  <div class="drawer__foot">
+    <div class="drawer__sub"><span>Subtotal</span><span id="drawerSub">$0</span></div>
+    <p class="drawer__note">Complimentary insured shipping &amp; gift wrapping.</p>
+    <button class="drawer__checkout">Checkout</button>
+  </div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

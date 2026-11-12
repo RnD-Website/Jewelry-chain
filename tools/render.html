@@ -1,0 +1,127 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body>
+<script type="module">
+import * as THREE from '../vendor/three.module.js';
+import { RoomEnvironment } from '../vendor/RoomEnvironment.js';
+import { buildChain, buildClasp, goldMaterial, drapeCurve, loopCurve, mulberry } from '../js/chain.js';
+
+const P = new URLSearchParams(location.search);
+const W = +P.get('w') || 1200, H = +P.get('h') || 1200;
+const style = P.get('style') || 'cable';
+const metal = P.get('metal') || 'yellow';
+const scene_ = P.get('scene') || 'tile';
+const seed = +P.get('seed') || 3;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = +P.get('exp') || 1.0;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = scene_ === 'tile' ? THREE.VSMShadowMap : THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+const mat = goldMaterial(metal);
+
+// --- procedural surface texture (stone / linen / sand) -----------------
+function noiseCanvas(size, colA, colB, scale, grain, seedN) {
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d'); const img = g.createImageData(size, size);
+  const rnd = mulberry(seedN);
+  // value-noise octaves
+  const oct = [];
+  for (let o = 0; o < 5; o++) { const n = 8 << o; const a = new Float32Array((n + 1) * (n + 1)); for (let i = 0; i < a.length; i++) a[i] = rnd(); oct.push({ n, a }); }
+  const sample = (o, x, y) => { const { n, a } = o; const fx = x * n, fy = y * n; const ix = Math.floor(fx), iy = Math.floor(fy); const tx = fx - ix, ty = fy - iy;
+    const s = t => t * t * (3 - 2 * t); const i0 = iy * (n + 1) + ix; const v = a[i0] * (1 - s(tx)) + a[i0 + 1] * s(tx); const w = a[i0 + n + 1] * (1 - s(tx)) + a[i0 + n + 2] * s(tx); return v * (1 - s(ty)) + w * s(ty); };
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    let v = 0, amp = 0.5;
+    for (const o of oct) { v += sample(o, x / size * 0.999 * scale % 1, y / size * 0.999 * scale % 1) * amp; amp *= 0.5; }
+    v = v + (rnd() - 0.5) * grain;
+    const i = (y * size + x) * 4;
+    for (let k = 0; k < 3; k++) img.data[i + k] = colA[k] + (colB[k] - colA[k]) * Math.min(1, Math.max(0, v));
+    img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
+
+let camera;
+const rnd = mulberry(seed);
+
+function chainCurveDrape(kind) {
+  // a long chain laid in a loose S across the frame (XZ plane, mm)
+  if (kind === 'coil') {
+    const pts = []; const turns = 1.6;
+    for (let i = 0; i <= 60; i++) { const t = i / 60; const a = t * Math.PI * 2 * turns + seed; const r = 18 + 26 * t + Math.sin(t * 9 + seed) * 2.5; pts.push([Math.cos(a) * r, Math.sin(a) * r * 0.92, 0]); }
+    return drapeCurve(pts);
+  }
+  if (kind === 'diag') {
+    const pts = []; for (let i = 0; i <= 30; i++) { const t = i / 30; pts.push([-110 + 220 * t, Math.sin(t * Math.PI * 1.25 + seed) * 22 - 40 + 80 * t, 0]); }
+    return drapeCurve(pts);
+  }
+  if (kind === 'u') {
+    const pts = []; for (let i = 0; i <= 40; i++) { const t = i / 40, a = Math.PI * t; pts.push([-Math.cos(a) * 44, Math.sin(a) * 56 - 26 + Math.sin(t*7+seed)*1.5, 0]); }
+    return drapeCurve(pts);
+  }
+}
+
+function addLights(kind) {
+  if (kind === 'tile') {
+    scene.add(new THREE.HemisphereLight(0xfff6ea, 0xd8c8b4, 0.9));
+    const d = new THREE.DirectionalLight(0xfff1dc, 2.4); d.position.set(-60, 140, 50); d.castShadow = true;
+    d.shadow.mapSize.set(2048, 2048); Object.assign(d.shadow.camera, { left: -120, right: 120, top: 120, bottom: -120, near: 1, far: 400 }); d.shadow.radius = 14; d.shadow.blurSamples = 24; d.shadow.bias = -0.0005;
+    scene.add(d);
+  } else {
+    const dark = P.get('tone') === 'dark';
+    scene.add(new THREE.HemisphereLight(0xffe2bd, 0x1a0f08, dark ? 0.12 : 0.28));
+    const sp = new THREE.SpotLight(0xffd29a, dark ? 2.2e5 : 2.6e5, 0, 0.24, 0.9, 2);
+    sp.position.set(-220, 260, -120); sp.target.position.set(10, 0, 10); scene.add(sp.target);
+    sp.castShadow = true; sp.shadow.mapSize.set(2048, 2048); sp.shadow.radius = 5; sp.shadow.blurSamples = 16; sp.shadow.bias = -0.0003; sp.shadow.camera.near = 50; sp.shadow.camera.far = 900;
+    scene.add(sp);
+    const rim = new THREE.DirectionalLight(0xffe9d2, dark ? 0.25 : 0.45); rim.position.set(160, 80, 160); scene.add(rim);
+  }
+}
+
+if (scene_ === 'tile') {
+  // product on cream backdrop, top-down
+  const tex = noiseCanvas(512, [236, 228, 216], [246, 241, 233], 2, 0.08, seed);
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  addLights('tile');
+  const curve = chainCurveDrape(P.get('shape') || 'coil');
+  const chain = buildChain(style, curve, { material: mat, planeNormal: new THREE.Vector3(0, 1, 0) });
+  chain.position.y = 1.2; scene.add(chain);
+  camera = new THREE.PerspectiveCamera(22, W / H, 1, 2000); camera.position.set(0, 330, 40); camera.lookAt(0, 0, 0);
+  if (P.get('zoom')) { camera.position.multiplyScalar(+P.get('zoom')); }
+} else {
+  // macro on warm stone, low angle, dark falloff
+  const dark = P.get('tone') === 'dark';
+  const tex = noiseCanvas(1024, dark ? [34, 24, 18] : [128, 104, 82], dark ? [58, 42, 31] : [170, 146, 118], 3, 0.5, seed);
+  const bump = noiseCanvas(1024, [0, 0, 0], [255, 255, 255], 12, 0.9, seed + 7);
+  const floorM = new THREE.MeshStandardMaterial({ map: tex, bumpMap: bump, bumpScale: 0.7, roughness: 0.95, envMapIntensity: 0.05 });
+  tex.repeat.set(2, 2); bump.repeat.set(3, 3);
+  const geo = new THREE.PlaneGeometry(900, 900, 200, 200);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), y = pos.getY(i); pos.setZ(i, Math.sin(x * 0.012 + seed) * 6 + Math.cos(y * 0.017) * 5 - Math.max(0, -y - 60) * 0.0); }
+  geo.computeVertexNormals();
+  const floor = new THREE.Mesh(geo, floorM); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  scene.background = new THREE.Color(dark ? 0x0d0907 : 0x3a2a1e);
+  scene.fog = new THREE.Fog(dark ? 0x0d0907 : 0x2a1d14, 220, 620);
+  addLights('macro');
+  const curve = chainCurveDrape(P.get('shape') || 'diag');
+  // lift the chain to sit on the undulating floor
+  const chain = buildChain(style, curve, { material: mat, planeNormal: new THREE.Vector3(0, 1, 0) });
+  scene.add(chain);
+  chain.children.forEach(m => { const mm = new THREE.Matrix4(), p = new THREE.Vector3(), q = new THREE.Quaternion(), s = new THREE.Vector3();
+    for (let i = 0; i < m.count; i++) { m.getMatrixAt(i, mm); mm.decompose(p, q, s); p.y = Math.sin(p.x * 0.012 + seed) * 6 + Math.cos(-p.z * 0.017) * 5 + 0.95; mm.compose(p, q, s); m.setMatrixAt(i, mm); } m.instanceMatrix.needsUpdate = true; });
+  if (P.get('clasp')) { const c = buildClasp(mat); const e = curve.getPointAt(1); c.position.set(e.x + 2, Math.sin((e.x+2) * 0.012 + seed) * 6 + Math.cos(e.z * 0.017) * 5 + 1.4, e.z - 5); c.rotation.set(-Math.PI / 2, 0, 0.6); scene.add(c); }
+  camera = new THREE.PerspectiveCamera(+P.get('fov') || 24, W / H, 1, 3000);
+  const cp = (P.get('cam') || '0,120,260').split(',').map(Number);
+  camera.position.set(...cp); const lk=(P.get('look')||'0,0,0').split(',').map(Number); camera.lookAt(...lk);
+}
+
+renderer.render(scene, camera);
+window.__done = true;
+</script></body></html>

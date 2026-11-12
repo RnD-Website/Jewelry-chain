@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}canvas{display:block}</style></head>
+<body>
+<script type="module">
+// Renders a seamlessly repeating strip of fine cable chain (?metal=yellow|rose|white).
+import * as THREE from '../vendor/three.module.js';
+import { RoomEnvironment } from '../vendor/RoomEnvironment.js';
+import { buildChain, goldMaterial, STYLES } from '../js/chain.js';
+const P = new URLSearchParams(location.search);
+const metal = P.get('metal') || 'yellow';
+const pitch = STYLES.cable.pitch, N = 32, PX = 10;           // 32 links, 10 px per mm
+const W = Math.round(N * pitch * PX), H = 60;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H); renderer.setClearColor(0x000000, 0);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.03).texture;
+const key = new THREE.DirectionalLight(0xfff1dc, 1.6); key.position.set(-30, 60, 80); scene.add(key);
+// links centred at (k + 0.5) * pitch; extra links past both ends so the crop repeats without a seam
+const x0 = -2 * pitch + pitch / 2;
+const curve = new THREE.LineCurve3(new THREE.Vector3(x0, 0, 0), new THREE.Vector3(x0 + (N + 4) * pitch, 0, 0));
+const chain = buildChain('cable', curve, { material: goldMaterial(metal), planeNormal: new THREE.Vector3(0, 0, 1), segs: [96, 16] });
+scene.add(chain);
+const cam = new THREE.OrthographicCamera(0, N * pitch, H / PX / 2, -H / PX / 2, -50, 50);
+cam.position.set(0, 0, 20); cam.lookAt(0, 0, 0);
+renderer.render(scene, cam);
+window.__done = true;
+</script></body></html>
